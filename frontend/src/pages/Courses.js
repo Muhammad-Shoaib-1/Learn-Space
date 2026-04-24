@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const API = "http://localhost:5000/api";
 
@@ -35,7 +36,7 @@ function Courses() {
 
     } catch (err) {
       console.log(err);
-      alert("Error loading courses");
+      toast.error("Error loading courses");
     } finally {
       setLoading(false);
     }
@@ -45,7 +46,7 @@ function Courses() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Please login first");
+      toast.error("Please login first");
       return;
     }
 
@@ -65,7 +66,7 @@ function Courses() {
       setEnrolledIds((prev) => [...prev, courseId]);
 
     } catch (err) {
-      alert(err.response?.data?.message || "Error enrolling");
+      toast.error(err.response?.data?.message || "Error enrolling");
     } finally {
       setEnrollingId(null);
     }

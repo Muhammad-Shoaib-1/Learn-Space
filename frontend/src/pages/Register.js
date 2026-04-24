@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Register() {
   const [name, setName] = useState("");
@@ -26,13 +27,12 @@ function Register() {
         role,
       });
 
-      alert("Registered Successfully");
+      toast.success("Registered Successfully");
 
-      // redirect without reload
       navigate("/login");
 
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }

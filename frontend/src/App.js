@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,7 +24,10 @@ function Navbar({ role, logout }) {
       <div className="container">
 
         {/* ── BRAND ── */}
-        <Link className="navbar-brand fw-bold fs-4 text-primary text-decoration-none d-flex align-items-center gap-2" to="/">
+        <Link
+          className="navbar-brand fw-bold fs-4 text-primary text-decoration-none d-flex align-items-center gap-2"
+          to="/"
+        >
           <span className="bg-primary text-white rounded-2 px-2 py-1 small">LS</span>
           LearnSpace
         </Link>
@@ -38,7 +49,9 @@ function Navbar({ role, logout }) {
             <li className="nav-item">
               <Link
                 to="/"
-                className={`nav-link fw-semibold px-3 rounded-3 me-1 ${isActive("/") ? "bg-primary bg-opacity-10 text-primary" : "text-secondary"}`}
+                className={`nav-link fw-semibold px-3 rounded-3 me-1 ${
+                  isActive("/") ? "bg-primary bg-opacity-10 text-primary" : "text-secondary"
+                }`}
               >
                 📖 Courses
               </Link>
@@ -48,7 +61,11 @@ function Navbar({ role, logout }) {
               <li className="nav-item">
                 <Link
                   to="/dashboard"
-                  className={`nav-link fw-semibold px-3 rounded-3 me-1 ${isActive("/dashboard") ? "bg-primary bg-opacity-10 text-primary" : "text-secondary"}`}
+                  className={`nav-link fw-semibold px-3 rounded-3 me-1 ${
+                    isActive("/dashboard")
+                      ? "bg-primary bg-opacity-10 text-primary"
+                      : "text-secondary"
+                  }`}
                 >
                   📊 Dashboard
                 </Link>
@@ -59,13 +76,16 @@ function Navbar({ role, logout }) {
               <li className="nav-item">
                 <Link
                   to="/create-course"
-                  className={`nav-link fw-semibold px-3 rounded-3 me-1 ${isActive("/create-course") ? "bg-warning bg-opacity-25 text-warning" : "text-secondary"}`}
+                  className={`nav-link fw-semibold px-3 rounded-3 me-1 ${
+                    isActive("/create-course")
+                      ? "bg-warning bg-opacity-25 text-warning"
+                      : "text-secondary"
+                  }`}
                 >
                   ✏️ Create Course
                 </Link>
               </li>
             )}
-
           </ul>
 
           {/* ── RIGHT SIDE ── */}
@@ -73,8 +93,15 @@ function Navbar({ role, logout }) {
 
             {/* Role badge */}
             {role && (
-              <span className={`badge rounded-pill px-3 py-2 fw-semibold ${role === "instructor" ? "bg-warning text-dark" : "bg-primary bg-opacity-10 text-primary"}`}>
-                {role === "instructor" ? "🧑‍🏫" : "🎓"} {role.charAt(0).toUpperCase() + role.slice(1)}
+              <span
+                className={`badge rounded-pill px-3 py-2 fw-semibold ${
+                  role === "instructor"
+                    ? "bg-warning text-dark"
+                    : "bg-primary bg-opacity-10 text-primary"
+                }`}
+              >
+                {role === "instructor" ? "🧑‍🏫" : "🎓"}{" "}
+                {role.charAt(0).toUpperCase() + role.slice(1)}
               </span>
             )}
 
@@ -90,41 +117,72 @@ function Navbar({ role, logout }) {
             )}
 
             {role && (
-              <button className="btn btn-outline-danger rounded-3 fw-semibold px-3" onClick={logout}>
+              <button
+                className="btn btn-outline-danger rounded-3 fw-semibold px-3"
+                onClick={logout}
+              >
                 Sign Out
               </button>
             )}
-
           </div>
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          theme="colored"
+        />
       </div>
     </nav>
+    
   );
 }
 
 function App() {
   const [role, setRole] = useState("");
 
-  useEffect(() => {
+  // 🔥 Function to read token and set role
+  const loadUserFromToken = () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = JSON.parse(atob(token.split(".")[1]));
-        setRole(decoded.role);
-      } catch (err) {
-        console.log("Invalid token");
-      }
+
+    if (!token) {
+      setRole("");
+      return;
     }
+
+    try {
+      const decoded = JSON.parse(atob(token.split(".")[1]));
+      setRole(decoded.role);
+    } catch (err) {
+      console.log("Invalid token");
+      setRole("");
+    }
+  };
+
+  useEffect(() => {
+    loadUserFromToken();
+
+    // 🔥 Listen for changes (login/logout in same tab fix)
+    window.addEventListener("focus", loadUserFromToken);
+
+    return () => {
+      window.removeEventListener("focus", loadUserFromToken);
+    };
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
+    setRole(""); // 🔥 instantly update navbar
     window.location.href = "/login";
   };
 
   return (
     <Router>
       <Navbar role={role} logout={logout} />
+
       <Routes>
         <Route path="/" element={<Courses />} />
         <Route path="/create-course" element={<CreateCourse />} />

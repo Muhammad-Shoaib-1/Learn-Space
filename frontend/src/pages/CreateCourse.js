@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 function CreateCourse() {
   const [title, setTitle] = useState("");
@@ -18,14 +19,14 @@ function CreateCourse() {
         { title, description, category, price, image },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Course created successfully");
+      toast.success("Course created successfully");
       setTitle("");
       setDescription("");
       setCategory("");
       setPrice("");
       setImage("");
     } catch (err) {
-      alert(err.response?.data?.message || "Error creating course");
+      toast.error(err.response?.data?.message || "Error creating course");
     }
   };
 

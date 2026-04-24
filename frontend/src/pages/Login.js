@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -31,13 +32,13 @@ function Login() {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       localStorage.setItem("user", JSON.stringify(decoded));
 
-      alert("Login successful");
+      toast.success("Login successful");
 
       // Redirect (no reload)
       navigate("/dashboard");
 
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
