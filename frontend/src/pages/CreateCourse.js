@@ -14,11 +14,18 @@ function CreateCourse() {
     const token = localStorage.getItem("token");
     if (!token) { alert("Please login as instructor"); return; }
     try {
-      await axios.post(
-        "http://localhost:5000/api/courses",
-        { title, description, category, price, image },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("image", image);
+
+      await axios.post("http://localhost:5000/api/courses", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toast.success("Course created successfully");
       setTitle("");
       setDescription("");
@@ -64,21 +71,14 @@ function CreateCourse() {
 
                   {/* ── IMAGE PREVIEW ── */}
                   {image && (
-                    <motion.div
-                      className="mb-4 rounded-4 overflow-hidden border"
-                      style={{ height: 180 }}
-                      initial={{ opacity: 0, scale: 0.97 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <img
-                        src={image}
-                        alt="Course preview"
-                        className="w-100 h-100"
-                        style={{ objectFit: "cover" }}
-                        onError={(e) => e.currentTarget.style.display = "none"}
-                      />
-                    </motion.div>
+  <div className="mb-3">
+    <img
+      src={URL.createObjectURL(image)}
+      alt="preview"
+      className="img-fluid rounded"
+      style={{ maxHeight: 200, objectFit: "cover" }}
+    />
+  </div>
                   )}
 
                   {/* ── COURSE TITLE ── */}
@@ -141,25 +141,11 @@ function CreateCourse() {
                   </div>
 
                   {/* ── IMAGE URL ── */}
-                  <div className="mb-4">
-                    <label className="form-label fw-semibold text-dark small text-uppercase">
-                      Image URL
-                    </label>
-                    <div className="input-group input-group-lg">
-                      <span className="input-group-text rounded-start-3 border-1 bg-light">
-                        🖼️
-                      </span>
-                      <input
-                        className="form-control rounded-end-3 border-1"
-                        placeholder="https://example.com/image.jpg"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                      />
-                    </div>
-                    <div className="form-text text-muted small mt-1">
-                      Paste an image URL to see a live preview above.
-                    </div>
-                  </div>
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
 
                   <hr className="my-4" />
 

@@ -164,14 +164,8 @@ function Courses() {
                 {/* IMAGE */}
                 <div style={{ height: 190 }}>
                   <img
-                    src={course.image}
+                    src={`http://localhost:5000${course.image}`}
                     alt={course.title}
-                    className="w-100 h-100"
-                    style={{ objectFit: "cover" }}
-                    onError={(e) =>
-                      (e.target.src =
-                        "https://via.placeholder.com/300x200?text=Course")
-                    }
                   />
                 </div>
 

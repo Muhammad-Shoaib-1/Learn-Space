@@ -1,4 +1,6 @@
 const express = require("express");
+const Course = require("../models/Course");
+
 const {
   createCourse,
   getCourses,
@@ -9,10 +11,31 @@ const {
 
 const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
+const multer = require("multer");
+const path = require("path");
+
 const router = express.Router();
 
+
+// ================== MULTER CONFIG ==================
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
+
+// ================== ROUTES ==================
+
+// Get all courses
 router.get("/", getCourses);
 
+// Get instructor courses
 router.get(
   "/my-courses",
   protect,
@@ -20,8 +43,36 @@ router.get(
   getInstructorCourses
 );
 
-// Only Instructor or Admin can create course
-router.post("/", protect, authorizeRoles("instructor", "admin"), createCourse);
+
+// ✅ CREATE COURSE (FINAL FIXED)
+router.post(
+  "/",
+  protect, // 🔥 REQUIRED
+  authorizeRoles("instructor"), // 🔥 ONLY INSTRUCTOR
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const { title, description, price, category } = req.body;
+
+      const newCourse = new Course({
+        title,
+        description,
+        price,
+        category,
+        image: req.file ? `/uploads/${req.file.filename}` : "",
+        instructor: req.user.id, // 🔥 MAIN FIX
+      });
+
+      await newCourse.save();
+
+      res.status(201).json(newCourse);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error creating course" });
+    }
+  }
+);
+
 
 // Update course
 router.put(
@@ -38,5 +89,6 @@ router.delete(
   authorizeRoles("instructor"),
   deleteCourse
 );
+
 
 module.exports = router;
