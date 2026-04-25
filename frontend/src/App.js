@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import Courses from "./pages/Courses";
 import CreateCourse from "./pages/CreateCourse";
 import Dashboard from "./pages/Dashboard";
+import AdminPanel from "./pages/AdminPanel";
 
 function Navbar({ role, logout }) {
   const location = useLocation();
@@ -86,6 +87,23 @@ function Navbar({ role, logout }) {
                 </Link>
               </li>
             )}
+
+            {/* ── ADMIN LINK ── only visible to admins */}
+            {role === "admin" && (
+              <li className="nav-item">
+                <Link
+                  to="/admin"
+                  className={`nav-link fw-semibold px-3 rounded-3 me-1 ${
+                    isActive("/admin")
+                      ? "bg-danger bg-opacity-10 text-danger"
+                      : "text-secondary"
+                  }`}
+                >
+                  🛡️ Admin
+                </Link>
+              </li>
+            )}
+
           </ul>
 
           {/* ── RIGHT SIDE ── */}
@@ -95,12 +113,14 @@ function Navbar({ role, logout }) {
             {role && (
               <span
                 className={`badge rounded-pill px-3 py-2 fw-semibold ${
-                  role === "instructor"
+                  role === "admin"
+                    ? "bg-danger bg-opacity-10 text-danger"
+                    : role === "instructor"
                     ? "bg-warning text-dark"
                     : "bg-primary bg-opacity-10 text-primary"
                 }`}
               >
-                {role === "instructor" ? "🧑‍🏫" : "🎓"}{" "}
+                {role === "admin" ? "🛡️" : role === "instructor" ? "🧑‍🏫" : "🎓"}{" "}
                 {role.charAt(0).toUpperCase() + role.slice(1)}
               </span>
             )}
@@ -126,6 +146,7 @@ function Navbar({ role, logout }) {
             )}
           </div>
         </div>
+
         <ToastContainer
           position="top-right"
           autoClose={2500}
@@ -137,22 +158,15 @@ function Navbar({ role, logout }) {
         />
       </div>
     </nav>
-    
   );
 }
 
 function App() {
   const [role, setRole] = useState("");
 
-  // 🔥 Function to read token and set role
   const loadUserFromToken = () => {
     const token = localStorage.getItem("token");
-
-    if (!token) {
-      setRole("");
-      return;
-    }
-
+    if (!token) { setRole(""); return; }
     try {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       setRole(decoded.role);
@@ -164,31 +178,26 @@ function App() {
 
   useEffect(() => {
     loadUserFromToken();
-
-    // 🔥 Listen for changes (login/logout in same tab fix)
     window.addEventListener("focus", loadUserFromToken);
-
-    return () => {
-      window.removeEventListener("focus", loadUserFromToken);
-    };
+    return () => window.removeEventListener("focus", loadUserFromToken);
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
-    setRole(""); // 🔥 instantly update navbar
+    setRole("");
     window.location.href = "/login";
   };
 
   return (
     <Router>
       <Navbar role={role} logout={logout} />
-
       <Routes>
         <Route path="/" element={<Courses />} />
         <Route path="/create-course" element={<CreateCourse />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
