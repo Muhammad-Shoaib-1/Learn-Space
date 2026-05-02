@@ -12,7 +12,10 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ["https://learn-space.vercel.app", "http://localhost:3000"],
+  credentials: true
+}));
 
 // Static folder
 app.use("/uploads", express.static("uploads"));

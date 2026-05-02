@@ -30,8 +30,8 @@ function Dashboard() {
 
       const url =
         decoded.role === "student"
-          ? "http://localhost:5000/api/enroll/my-courses"
-          : "http://localhost:5000/api/courses/my-courses";
+          ? "https://learnspace-backend-u9ng.onrender.com/api/enroll/my-courses"
+          : "https://learnspace-backend-u9ng.onrender.com/api/courses/my-courses";
 
       axios
         .get(url, {
@@ -58,7 +58,7 @@ function Dashboard() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/enroll/progress/${id}`,
+        `https://learnspace-backend-u9ng.onrender.com/api/enroll/progress/${id}`,
         { progress: value },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -88,7 +88,7 @@ function Dashboard() {
 
     try {
       if (actionType === "delete") {
-        await axios.delete(`http://localhost:5000/api/courses/${selectedId}`, {
+        await axios.delete(`https://learnspace-backend-u9ng.onrender.com/api/courses/${selectedId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -97,7 +97,7 @@ function Dashboard() {
 
       if (actionType === "unenroll") {
         await axios.delete(
-          `http://localhost:5000/api/enroll/${selectedId}`,
+          `https://learnspace-backend-u9ng.onrender.com/api/enroll/${selectedId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -130,7 +130,7 @@ function Dashboard() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/courses/${id}`,
+        `https://learnspace-backend-u9ng.onrender.com/api/courses/${id}`,
         { title, description },
         {
           headers: { Authorization: `Bearer ${token}` },

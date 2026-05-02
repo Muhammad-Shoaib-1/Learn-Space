@@ -3,7 +3,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 
-const BASE = "http://localhost:5000/api";
+const BASE = "https://learnspace-backend-u9ng.onrender.com/api";
 
 function Profile() {
   const [user, setUser] = useState(null);

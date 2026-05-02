@@ -217,7 +217,7 @@ npm start
 **6. Open in Browser**
 ```
 Frontend: http://localhost:3000
-Backend:  http://localhost:5000
+Backend:  https://learnspace-backend-u9ng.onrender.com
 ```
 
 ### Creating an Admin Account

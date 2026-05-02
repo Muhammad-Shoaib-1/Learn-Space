@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const API = "http://localhost:5000/api";
+const API = "https://learnspace-backend-u9ng.onrender.com/api";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -205,7 +205,7 @@ function Courses() {
                 {/* IMAGE */}
                 <div style={{ height: 190, overflow: "hidden" }}>
                   <img
-                    src={`http://localhost:5000${course.image}`}
+                    src={`https://learnspace-backend-u9ng.onrender.com${course.image}`}
                     alt={course.title}
                     className="w-100 h-100"
                     style={{ objectFit: "cover" }}

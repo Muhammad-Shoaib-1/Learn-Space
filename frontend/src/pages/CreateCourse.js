@@ -20,7 +20,7 @@ function CreateCourse() {
       formData.append("price", price);
       formData.append("image", image);
 
-      await axios.post("http://localhost:5000/api/courses", formData, {
+      await axios.post("https://learnspace-backend-u9ng.onrender.com/api/courses", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

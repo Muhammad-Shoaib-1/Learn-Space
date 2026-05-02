@@ -5,11 +5,10 @@ import { motion } from "framer-motion";
 
 function Home() {
   const [courseCount, setCourseCount] = useState(0);
-  const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
     // Fetch course count for stats
-    axios.get("http://localhost:5000/api/courses")
+    axios.get("https://learnspace-backend-u9ng.onrender.com/api/courses")
       .then((res) => setCourseCount(res.data.length))
       .catch(() => setCourseCount(0));
   }, []);

@@ -36,11 +36,11 @@ function CourseDetail() {
     setLoading(true);
     try {
       // Fetch course detail
-      const { data } = await axios.get(`http://localhost:5000/api/courses/${id}`);
+      const { data } = await axios.get(`https://learnspace-backend-u9ng.onrender.com/api/courses/${id}`);
       setCourse(data);
 
       // Fetch all courses to get related ones (same category)
-      const allRes = await axios.get("http://localhost:5000/api/courses");
+      const allRes = await axios.get("https://learnspace-backend-u9ng.onrender.com/api/courses");
       const related = allRes.data
         .filter((c) => c._id !== id && c.category === data.category)
         .slice(0, 3);
@@ -49,7 +49,7 @@ function CourseDetail() {
       // Check if already enrolled
       if (token) {
         const enrollRes = await axios.get(
-          "http://localhost:5000/api/enroll/my-courses",
+          "https://learnspace-backend-u9ng.onrender.com/api/enroll/my-courses",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const ids = enrollRes.data.map((e) => e.course._id);
@@ -57,7 +57,7 @@ function CourseDetail() {
         // Fetch lessons if enrolled
           if (ids.includes(id)) {
             const lessonsRes = await axios.get(
-            `http://localhost:5000/api/lessons/${id}`,
+            `https://learnspace-backend-u9ng.onrender.com/api/lessons/${id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setLessons(lessonsRes.data);
@@ -79,7 +79,7 @@ function CourseDetail() {
     setEnrolling(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/enroll",
+        "https://learnspace-backend-u9ng.onrender.com/api/enroll",
         { courseId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -110,7 +110,7 @@ function CourseDetail() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/enroll",
+        "https://learnspace-backend-u9ng.onrender.com/api/enroll",
         { courseId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -217,7 +217,7 @@ function CourseDetail() {
                   <img
                     src={
                       course.image?.startsWith("/uploads")
-                        ? `http://localhost:5000${course.image}`
+                        ? `https://learnspace-backend-u9ng.onrender.com${course.image}`
                         : course.image || "https://via.placeholder.com/400x200"
                     }
                     alt={course.title}
@@ -550,7 +550,7 @@ function CourseDetail() {
                         <img
                           src={
                             c.image?.startsWith("/uploads")
-                              ? `http://localhost:5000${c.image}`
+                              ? `https://learnspace-backend-u9ng.onrender.com${c.image}`
                               : c.image || "https://via.placeholder.com/300x160"
                           }
                           alt={c.title}
