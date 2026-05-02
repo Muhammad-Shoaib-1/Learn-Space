@@ -3,6 +3,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import ConfirmModal from "../components/ConfirmModal";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [courses, setCourses] = useState([]);
@@ -69,8 +70,10 @@ function Dashboard() {
           c._id === id ? { ...c, progress: value || 0 } : c
         )
       );
+      toast.success("Progress updated ✅");
     } catch (err) {
-      toast.error("Error updating progress");
+      console.log("Progress error:", err.response?.data);
+      toast.error(err.response?.data?.message || "Error updating progress");
     }
   };
 
@@ -144,15 +147,6 @@ function Dashboard() {
     }
   };
 
-  const getInitials = (name) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const avgProgress =
     role === "student" && courses.length > 0
@@ -202,24 +196,6 @@ return (
             </p>
           </motion.div>
 
-          {/* USER CARD */}
-          {user && (
-            <div className="card shadow-sm rounded-4 mb-4">
-              <div className="card-body d-flex gap-3">
-                <div
-                  className="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center"
-                  style={{ width: 50, height: 50 }}
-                >
-                  {getInitials(user.name)}
-                </div>
-                <div>
-                  <h5 className="fw-bold mb-1">{user.name}</h5>
-                  <small className="text-muted">{user.email}</small>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* STATS */}
           <div className="row mb-4">
             <div className="col-md-3">
@@ -261,24 +237,29 @@ return (
 
                       {/* INSTRUCTOR */}
                       {role === "instructor" && (
-                        <div className="mt-auto d-flex gap-2">
+                      <div className="mt-auto d-flex flex-column gap-2">
+                        <div className="d-flex gap-2">
                           <button
-                            className="btn btn-sm btn-outline-primary"
+                            className="btn btn-sm btn-outline-primary flex-fill rounded-3"
                             onClick={() => editCourse(item._id)}
                           >
-                            Edit
+                            ✏️ Edit
                           </button>
-
                           <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() =>
-                              handleActionClick(item._id, "delete")
-                            }
+                            className="btn btn-sm btn-outline-danger flex-fill rounded-3"
+                            onClick={() => handleActionClick(item._id, "delete")}
                           >
-                            Delete
+                            🗑️ Delete
                           </button>
                         </div>
-                      )}
+                        <Link
+                          to={`/manage-lessons/${item._id}`}
+                          className="btn btn-sm btn-warning rounded-3 fw-semibold w-100 text-dark"
+                          >
+                          📚 Manage Lessons
+                        </Link>
+                      </div>
+                    )}
 
                       {/* STUDENT */}
                       {role === "student" && (
@@ -296,6 +277,12 @@ return (
                           </div>
 
                           {/* Progress buttons */}
+                          <Link
+                            to={`/courses/${item.course?._id}`}
+                            className="btn btn-sm btn-primary w-100 rounded-3 fw-semibold mb-2"
+                          >
+                            📖 View Lessons
+                          </Link>
                           <div className="d-flex gap-2 mb-2">
                             <button
                               onClick={() =>
@@ -323,7 +310,6 @@ return (
                             </button>
                           </div>
 
-                          {/* Remove */}
                           <button
                             className="btn btn-sm btn-outline-danger w-100"
                             onClick={() => handleActionClick(item.course._id, "unenroll")}

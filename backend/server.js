@@ -6,7 +6,7 @@ dotenv.config();
 
 const app = express();
 
-// 🔥 Connect DB FIRST
+// Connect DB
 const connectDB = require("./config/db");
 connectDB();
 
@@ -14,29 +14,29 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
-// Static folder (for images)
+// Static folder
 app.use("/uploads", express.static("uploads"));
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const lessonRoutes = require("./routes/lessonRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/enroll", enrollmentRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/lessons", lessonRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Start server LAST
+// Start server
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-  //Admin Routes
-const adminRoutes = require("./routes/adminRoutes");
-app.use("/api/admin", adminRoutes);

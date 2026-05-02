@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Course = require("../models/Course");
 const Enrollment = require("../models/Enrollment");
+const bcrypt = require("bcryptjs");
 
 // ── GET all users ──────────────────────────────────────────
 const getAllUsers = async (req, res) => {
@@ -18,18 +19,38 @@ const deleteUser = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // prevent admin from deleting themselves
     if (req.user._id.toString() === req.params.id) {
       return res.status(400).json({ message: "Cannot delete your own account" });
     }
 
     await User.findByIdAndDelete(req.params.id);
-    // also remove their enrollments
     await Enrollment.deleteMany({ student: req.params.id });
 
     res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Error deleting user" });
+  }
+};
+
+// ── RESET user password (admin sets new password) ─────────
+const resetUserPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.json({ message: `Password updated for ${user.name}` });
+  } catch (err) {
+    res.status(500).json({ message: "Error resetting password" });
   }
 };
 
@@ -45,7 +66,7 @@ const getAllCourses = async (req, res) => {
   }
 };
 
-// ── DELETE any course (admin) ──────────────────────────────
+// ── DELETE any course ──────────────────────────────────────
 const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -66,28 +87,18 @@ const getAnalytics = async (req, res) => {
     const totalUsers = await User.countDocuments();
     const totalCourses = await Course.countDocuments();
     const totalEnrollments = await Enrollment.countDocuments();
-
     const studentCount = await User.countDocuments({ role: "student" });
     const instructorCount = await User.countDocuments({ role: "instructor" });
 
-    // top 5 courses by enrollment count
     const topCourses = await Enrollment.aggregate([
       { $group: { _id: "$course", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
       { $limit: 5 },
-      {
-        $lookup: {
-          from: "courses",
-          localField: "_id",
-          foreignField: "_id",
-          as: "course",
-        },
-      },
+      { $lookup: { from: "courses", localField: "_id", foreignField: "_id", as: "course" } },
       { $unwind: "$course" },
       { $project: { _id: 0, title: "$course.title", count: 1 } },
     ]);
 
-    // monthly enrollments for current year
     const currentYear = new Date().getFullYear();
     const monthlyEnrollments = await Enrollment.aggregate([
       {
@@ -98,12 +109,7 @@ const getAnalytics = async (req, res) => {
           },
         },
       },
-      {
-        $group: {
-          _id: { $month: "$createdAt" },
-          count: { $sum: 1 },
-        },
-      },
+      { $group: { _id: { $month: "$createdAt" }, count: { $sum: 1 } } },
       { $sort: { _id: 1 } },
     ]);
 
@@ -121,4 +127,11 @@ const getAnalytics = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, deleteUser, getAllCourses, deleteCourse, getAnalytics };
+module.exports = {
+  getAllUsers,
+  deleteUser,
+  resetUserPassword,
+  getAllCourses,
+  deleteCourse,
+  getAnalytics,
+};
