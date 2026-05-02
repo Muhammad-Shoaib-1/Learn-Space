@@ -37,8 +37,6 @@ function About() {
 
   const team = [
     { name: "Muhammad Shoaib", role: "Full Stack Developer & Founder", initials: "MS", color: "#0d6efd" },
-    { name: "Ali Hassan",       role: "Lead Instructor — Web Dev",      initials: "AH", color: "#198754" },
-    { name: "Zara Malik",       role: "Course Designer & Instructor",   initials: "ZM", color: "#6f42c1" },
   ];
 
   const techStack = [
@@ -229,10 +227,7 @@ function About() {
       <section className="py-5 bg-white">
         <div className="container py-4">
           <motion.div className="text-center mb-5" {...fadeUp}>
-            <span className="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2 fw-semibold small mb-2">
-              👥 The Team
-            </span>
-            <h2 className="fw-bold display-6 text-dark">Meet the People Behind LearnSpace</h2>
+            <h2 className="fw-bold display-6 text-dark">Meet the Person Behind LearnSpace</h2>
           </motion.div>
 
           <div className="row g-4 justify-content-center">
