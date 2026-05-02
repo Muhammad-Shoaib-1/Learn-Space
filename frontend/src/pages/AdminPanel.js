@@ -308,13 +308,38 @@ function AdminPanel() {
                       <h6 className="fw-bold text-dark mb-0">
                         👥 All Users <span className="badge bg-secondary rounded-pill ms-1">{filteredUsers.length}</span>
                       </h6>
-                      <input
-                        className="form-control form-control-sm rounded-3"
-                        style={{ width: 230 }}
-                        placeholder="Search by name or email..."
-                        value={userSearch}
-                        onChange={(e) => setUserSearch(e.target.value)}
-                      />
+                      <div className="d-flex gap-2">
+  <input
+    type="text"
+    className="form-control form-control-sm rounded-3"
+    style={{ width: 200 }}
+    placeholder="Search by name or email..."
+    autoComplete="new-password"
+    defaultValue=""
+    id="userSearchInput"
+    onKeyDown={(e) => {
+      if (e.key === "Enter") setUserSearch(e.target.value);
+    }}
+  />
+  <button
+    className="btn btn-primary btn-sm rounded-3 fw-semibold"
+    onClick={() => {
+      const val = document.getElementById("userSearchInput").value;
+      setUserSearch(val);
+    }}
+  >
+    🔍
+  </button>
+  <button
+    className="btn btn-outline-secondary btn-sm rounded-3"
+    onClick={() => {
+      setUserSearch("");
+      document.getElementById("userSearchInput").value = "";
+    }}
+  >
+    ✕
+  </button>
+</div>
                     </div>
 
                     {/* ⚠️ Note about passwords */}
