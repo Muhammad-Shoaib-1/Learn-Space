@@ -14,7 +14,7 @@
 **A production-ready, full-stack Learning Management System built with the MERN Stack.**  
 Empowering students, instructors, and administrators with a seamless learning experience.
 
-[🌐 Live Demo](#) • [📖 Documentation](#-api-documentation) • [🐛 Report Bug](#) • [✨ Request Feature](#)
+[🌐 Live Demo](https://learn-space-eight.vercel.app) • [📖 Documentation](#-api-documentation) • [🐛 Report Bug](#) • [✨ Request Feature](#)
 
 </div>
 
