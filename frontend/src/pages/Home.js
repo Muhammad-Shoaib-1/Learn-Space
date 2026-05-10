@@ -313,57 +313,6 @@ function Home() {
           </div>
         </motion.div>
       </section>
-
-      {/* ══════════════ FOOTER ══════════════ */}
-      <footer className="bg-dark text-white py-5">
-        <div className="container">
-          <div className="row g-4 mb-4">
-            <div className="col-md-4">
-              <div className="d-flex align-items-center gap-2 mb-3">
-                <span className="bg-primary text-white rounded-2 px-2 py-1 small fw-bold">LS</span>
-                <span className="fw-bold fs-5">LearnSpace</span>
-              </div>
-              <p className="text-white opacity-50 small">
-                A modern learning management system built with the MERN stack. Empowering learners and instructors across Pakistan.
-              </p>
-            </div>
-            <div className="col-md-2 offset-md-2">
-              <h6 className="fw-bold mb-3">Platform</h6>
-              <ul className="list-unstyled">
-                {[
-                  { label: "Courses",   to: "/courses"  },
-                  { label: "Dashboard", to: "/dashboard" },
-                  { label: "Register",  to: "/register" },
-                  { label: "Login",     to: "/login"    },
-                ].map((l) => (
-                  <li key={l.label} className="mb-2">
-                    <Link to={l.to} className="text-white opacity-50 text-decoration-none small" style={{ transition: "opacity .2s" }}
-                      onMouseEnter={(e) => e.target.style.opacity = 1}
-                      onMouseLeave={(e) => e.target.style.opacity = 0.5}
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-md-3">
-              <h6 className="fw-bold mb-3">Roles</h6>
-              <ul className="list-unstyled">
-                {["🎓 Student", "🧑‍🏫 Instructor", "🛡️ Admin"].map((r) => (
-                  <li key={r} className="mb-2 text-white opacity-50 small">{r}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <hr className="border-secondary" />
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <p className="text-white opacity-50 small mb-0">© 2025 LearnSpace. Built with MERN Stack.</p>
-            <p className="text-white opacity-50 small mb-0">Made with ❤️ in Pakistan</p>
-          </div>
-        </div>
-      </footer>
-
     </div>
   );
 }
